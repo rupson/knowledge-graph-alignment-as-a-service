@@ -1,0 +1,23 @@
+services:
+  doubler: 
+    build: 
+      context: ./doubler
+      dockerfile: Dockerfile
+    networks:
+      - double-network
+    tty: true
+    # command: /bin/bash
+
+  rest-server:
+    build:
+      context: ./rest-server
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - double-network
+    command: yarn start
+
+networks:
+  double-network:
+    driver: bridge
