@@ -1,3 +1,6 @@
+# private ssh key(s)
+.ssh
+
 # Logs
 logs
 *.log
