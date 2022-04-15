@@ -3,10 +3,12 @@ services:
     build: 
       context: ./doubler
       dockerfile: Dockerfile
+    ports:
+      - 22:22
     networks:
       - double-network
-    tty: true
-    # command: /bin/bash
+    # tty: true
+    # command: /usr/sbin/sshd -D
 
   rest-server:
     build:
