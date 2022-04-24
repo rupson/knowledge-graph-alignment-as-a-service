@@ -1,6 +1,9 @@
 # private ssh key(s)
 .ssh
 
+# data files for local testing
+data
+
 # Logs
 logs
 *.log
