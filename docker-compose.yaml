@@ -1,0 +1,29 @@
+services:
+  logmap:
+    container_name: logmap
+    build:
+      context: ./logmap
+      dockerfile: logmap-dockerfile
+    ports:
+      - 22:22
+    networks:
+      - logmap-network
+
+  rest-server:
+    container_name: server
+    build:
+      context: ./rest-server
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - logmap-network
+    environment:
+      - LOGMAP_URL=logmap
+      - SSH_USER=rob
+    command: yarn start
+
+networks:
+  logmap-network:
+    name: logmap-netowrk
+    driver: bridge

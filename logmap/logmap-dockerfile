@@ -7,30 +7,36 @@ RUN git clone https://github.com/ernestojimenezruiz/logmap-matcher.git /usr/src/
 
 FROM maven:alpine as TARGET
 
-RUN apk add --update --no-cache openssh 
-
-RUN adduser -h /home/rob -s /bin/sh -D rob
-RUN echo -n 'rob:rob' | chpasswd
-
-COPY id_rsa.pub id_rsa.pub
-RUN mkdir /home/rob/.ssh
-RUN touch /home/rob/.ssh/authorized_keys
-RUN cat id_rsa.pub >> /home/rob/.ssh/authorized_keys
-
-COPY entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
-
-EXPOSE 22
 
 WORKDIR /usr/src/app
 RUN mkdir out
+RUN chmod 777 ./out
 
 COPY --from=CLONER /usr/src/app/logmap-matcher /usr/src/app/logmap-matcher
 
-# COPY data data
+COPY data data
+
+RUN chmod 777 ./data
 
 WORKDIR /usr/src/app/logmap-matcher
 RUN mvn install:install-file -Dfile=./lib/google-api-translate-java-0.97.jar -DgroupId=com.googlecode -DartifactId=google-api-translate-java -Dversion=0.97 -Dpackaging=jar
 RUN mvn package
 
-# java -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/human.owl file:/usr/src/app/data/mouse.owl /usr/src/app/out true
+RUN apk add --update --no-cache openssh 
+
+RUN adduser -h /usr/src/app/logmap-matcher -s /bin/sh -D rob
+RUN echo -n 'rob:rob' | chpasswd
+
+COPY id_rsa.pub id_rsa.pub
+RUN mkdir /usr/src/app/logmap-matcher/.ssh
+RUN touch /usr/src/app/logmap-matcher/.ssh/authorized_keys
+RUN cat id_rsa.pub >> /usr/src/app/logmap-matcher/.ssh/authorized_keys
+
+RUN chmod -R 777 ./*
+# RUN chmod -R 444 *
+
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 22
+# java -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/human.owl file:/usr/src/app/data/mouse.owl /usr/src/app/out/ true
