@@ -12,7 +12,7 @@ COPY package.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
-COPY index.ts index.ts
+COPY *.ts .
 
 EXPOSE 3000
 
