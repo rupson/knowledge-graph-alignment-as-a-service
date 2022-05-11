@@ -5,8 +5,11 @@ RUN apk add --no-cahce git
 # TODO: Clone with ssh
 RUN git clone https://github.com/ernestojimenezruiz/logmap-matcher.git /usr/src/app/logmap-matcher
 
-FROM maven:alpine as TARGET
+## Current master is broken. TODO: set a commit hash as an optional build argument (defualt is master branch)
+RUN cd /usr/src/app/logmap-matcher && git reset --hard 18a9541141be422b240e8b8dc2a35705f6c1b3bb
 
+# FROM maven:alpine as TARGET
+FROM maven:3.8-eclipse-temurin-8-alpine as TARGET
 
 WORKDIR /usr/src/app
 RUN mkdir out

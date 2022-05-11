@@ -21,7 +21,7 @@ ensureIsDefined([logmapUrl, sshUser], {
 	},
 });
 
-const execInLogmap = execInSsh(sshUser, logmapUrl);
+const execInLogmap = execInSsh(sshUser as string, logmapUrl as string);
 
 const app = express();
 const port = 3000;
