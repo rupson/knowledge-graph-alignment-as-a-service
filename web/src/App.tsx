@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 
@@ -7,29 +6,62 @@ const callServer = async () => {
 	console.log(`>>> calling server`);
 	const { data } = await axios.post(
 		// `${process.env.REACT_APP_LOGMAP_API_URL}/align` || "",
-    `http://localhost:4000/align`, {}, {}
+		`http://localhost:4000/align`,
+		{},
+		{},
 	);
 	console.log(`>>> data >>`, data);
 };
 
-function App() {
+const OntologyUploader: React.FC = () => {
 	return (
-		<div className='App'>
-			<header className='App-header'>
-				<img src={logo} className='App-logo' alt='logo' />
-				<p>Hello world!</p>
-				<button onClick={callServer}>call server</button>
-				<a
-					className='App-link'
-					href='https://reactjs.org'
-					target='_blank'
-					rel='noopener noreferrer'
-				>
-					Learn React
-				</a>
-			</header>
+		<input
+			type='file'
+			style={{
+				border: "solid 1px salmon",
+				borderStyle: "dashed",
+				padding: "40px",
+			}}
+		/>
+	);
+};
+
+const OntologiesUploaders: React.FC = () => {
+	return (
+		<div
+			style={{ display: "flex", justifyContent: "space-around", width: "100%" }}
+		>
+			<OntologyUploader />
+			<OntologyUploader />
 		</div>
 	);
-}
+};
+
+const OntologyAligner: React.FC = () => {
+	const [ontologies, setOntologies] = React.useState([undefined, undefined]);
+	return (
+		<div
+			style={{
+				margin: "auto",
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "flex-start",
+			}}
+		>
+			<h2>Align ontologies with Logmap</h2>
+			<OntologiesUploaders />
+			<button type='submit'>Align with logmap</button>
+		</div>
+	);
+};
+
+const App = () => {
+	return (
+		<div className='App'>
+			<h1>Logmap web interface</h1>
+			<OntologyAligner />
+		</div>
+	);
+};
 
 export default App;
