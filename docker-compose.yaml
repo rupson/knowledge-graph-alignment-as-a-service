@@ -16,13 +16,17 @@ services:
       context: ./rest-server
       dockerfile: Dockerfile
     ports:
-      - 4000:3000
+      - 4000:4000
     networks:
       - logmap-network
     environment:
       - LOGMAP_URL=logmap
       - SSH_USER=rob
     command: yarn start
+    # volume for development only
+    # mounts source code to container
+    volumes:
+      - ./rest-server:/usr/src/app
 
   web:
     container_name: web
@@ -34,7 +38,7 @@ services:
     networks:
       - logmap-network
     environment:
-      - REACT_APP_LOGMAP_API_URL=http://logmap:3001
+      - REACT_APP_LOGMAP_API_URL=http://server:4000
     command: yarn start
     # volume for development only
     # mounts source code to container
@@ -43,5 +47,5 @@ services:
 
 networks:
   logmap-network:
-    name: logmap-netowrk
+    name: logmap-network
     driver: bridge
