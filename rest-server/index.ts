@@ -3,7 +3,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import { execInSsh } from "./sshHelpers";
 
-const JAVA_BINARY = `/opt/java/openjdk/bin/java`
+const JAVA_BINARY = `java`
 
 const ensureIsDefined = (
 	maybeUndefined: Array<unknown>,

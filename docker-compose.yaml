@@ -8,7 +8,7 @@ services:
       - 22:22
     networks:
       - logmap-network
-    platform: linux/amd64
+    # platform: linux/amd64
 
   rest-server:
     container_name: server
