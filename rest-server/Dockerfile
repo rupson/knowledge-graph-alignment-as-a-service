@@ -14,6 +14,6 @@ RUN yarn install --frozen-lockfile
 
 COPY *.ts .
 
-EXPOSE 3000
+EXPOSE 4000
 
 CMD ["yarn", "start"]
