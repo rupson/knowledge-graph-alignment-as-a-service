@@ -9,7 +9,7 @@ The project consists of 3 applications. These are configured for local developme
 ### Pre-requisites
 
 * [Docker](https://docs.docker.com/get-docker/) (recent versions come with docker-compose out of the box)
-* ssh key for inter-service communication. See [ssh-setup](./docs/ssh-setup).
+* ssh key for inter-service communication. See [ssh-setup](./docs/ssh-setup.md).
 
 Docker handles all dependencies for you, so no other pre-requisites are required. 
 
