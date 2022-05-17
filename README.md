@@ -2,6 +2,9 @@
 
 Monolithic repository containing full stack application for Knowledge Graph Alignment as a Service. Exposes CLI functionality of [Logmap](https://github.com/ernestojimenezruiz/logmap-matcher) to users via a web interface and a RESTful API.
 
+Contains 3 primary applications:<br/>
+[**logmap**](./logmap) | [**rest server**](./rest-server) | [**webapp**](./web)
+
 ## Developing locally
 
 The project consists of 3 applications. These are configured for local development with [`docker-compose`](https://docs.docker.com/compose/).
@@ -12,6 +15,7 @@ The project consists of 3 applications. These are configured for local developme
 * ssh key for inter-service communication. See [ssh-setup](./docs/ssh-setup.md).
 
 Docker handles all dependencies for you, so no other pre-requisites are required. 
+For running any one service individually, this cal still be done with docker compose (`docker-compose {{service-name}}`), or see the readme for that service.
 
 ### Developing
 
