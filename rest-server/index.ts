@@ -1,9 +1,13 @@
 import express from "express";
-import cors from 'cors'
-import bodyParser from 'body-parser'
+import cors from "cors";
+import bodyParser from "body-parser";
+import multer from "multer";
+
 import { execInSsh } from "./sshHelpers";
 
-const JAVA_BINARY = `java`
+const upload = multer({ dest: "uploaded_3" });
+
+const JAVA_BINARY = `java`;
 
 const ensureIsDefined = (
 	maybeUndefined: Array<unknown>,
@@ -13,7 +17,7 @@ const ensureIsDefined = (
 		return true;
 	}
 	options.otherwise(maybeUndefined);
-	return false
+	return false;
 };
 
 const { LOGMAP_URL: logmapUrl, SSH_USER: sshUser } = process.env;
@@ -30,13 +34,14 @@ const execInLogmap = execInSsh(sshUser as string, logmapUrl as string);
 const app = express();
 const port = 4000;
 
-app.use(cors())
-app.use(bodyParser.json())
+app.use(cors());
+app.use(bodyParser.json());
 
-app.get('/ping', (req, res) => res.send('pong\n'))
+app.get("/ping", (req, res) => res.send("pong\n"));
 
-app.post("/align", async (req, res) => {
-	console.log(`>>>> received req`)
+app.post("/align", upload.array("ontologies"), async (req, res) => {
+	console.log(`>>>> received req`);
+	console.log(`>>req.files>>`, req.files);
 	await execInLogmap(
 		`${JAVA_BINARY} -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/human.owl file:/usr/src/app/data/mouse.owl /usr/src/app/out/ true`,
 	);
