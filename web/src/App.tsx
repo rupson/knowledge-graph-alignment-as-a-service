@@ -4,8 +4,12 @@ import axios from "axios";
 
 type Ontology = unknown;
 
-const callServer = async (ontologies: [Ontology, Ontology]) => {
+const callServer = async (
+	ontologies: [Ontology, Ontology],
+	setOutput: (output: string) => void,
+) => {
 	console.log(`>>> calling server`);
+	setOutput("loading...");
 	const formData = new FormData();
 	formData.append("ontologies", ontologies[0] as File);
 	formData.append("ontologies", ontologies[1] as File);
@@ -16,6 +20,7 @@ const callServer = async (ontologies: [Ontology, Ontology]) => {
 		{ headers: { "Content-type": "multipart/form-data" } },
 	);
 	console.log(`>>> data >>`, data);
+	setOutput(data.result);
 };
 
 const OntologyUploader: React.FC<{
@@ -65,10 +70,11 @@ const OntologyAligner: React.FC = () => {
 	const [ontologies, setOntologies] = React.useState<
 		[Ontology | undefined, Ontology | undefined]
 	>([undefined, undefined]);
+	const [output, setOutput] = React.useState("");
 
 	React.useEffect(() => {
 		console.log(`>>OntologyAligner::useEffect::ontologies>>`, ontologies);
-	}, ontologies);
+	}, [ontologies]);
 
 	return (
 		<div
@@ -88,11 +94,12 @@ const OntologyAligner: React.FC = () => {
 				type='submit'
 				onClick={(...args) => {
 					console.log(`>>onClick::args>>`, args);
-					callServer(ontologies);
+					callServer(ontologies, setOutput);
 				}}
 			>
 				Align with logmap
 			</button>
+			<div>{output}</div>
 		</div>
 	);
 };

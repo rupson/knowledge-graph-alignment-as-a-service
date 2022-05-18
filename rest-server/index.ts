@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 
-import { execInSsh } from "./sshHelpers";
+import { exec, execInSsh } from "./sshHelpers";
 import { Request } from "express-serve-static-core";
 
 // const upload = multer({ dest: "uploaded_3" });
@@ -64,17 +64,39 @@ app.post(
 			next,
 		),
 	async (req, res) => {
-		console.log(`>>>> received req`);
 		if (!hasRequestId(req)) throw new Error(`missing request id`);
-		console.log(`>>> request id: `, req.requestId);
-		console.log(`>>req.files>>`, req.files);
-		// await execInLogmap(
-		// 	`${JAVA_BINARY} -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/human.owl file:/usr/src/app/data/mouse.owl /usr/src/app/out/ true`,
-		// );
-		// console.log(`>> alignment complete >>`);
-		// const result = await execInLogmap(`cat ../out/logmap2_mappings.txt`);
+		console.log(`>>incoming request `, {
+			requestId: req.requestId,
+			files: req.files,
+		});
 
-		return res.status(200).send({ result: "ok" });
+		const { requestId } = req;
+
+		console.log(`>>copying files to remote server`);
+		await execInLogmap(
+			`mkdir /usr/src/app/data/${requestId} && \
+			mkdir /usr/src/app/out/${requestId}`,
+		);
+		await exec(
+			`scp ./uploaded/${requestId}/* rob@logmap:/usr/src/app/data/${requestId}`,
+		);
+		console.log(`< Uploaded files to logmap`);
+		await execInLogmap(
+			//@ts-ignore
+			`${JAVA_BINARY} -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/${requestId}/${req.files[0].filename} file:/usr/src/app/data/${requestId}/${req.files[1].filename} /usr/src/app/out/${requestId}/ true`,
+		);
+		console.log(`>> alignment complete >>`);
+		const result = await execInLogmap(
+			`cat ../out/${requestId}/logmap2_mappings.txt`,
+		);
+
+		res.status(200).send({ result });
+
+		await execInLogmap(`
+		rm -rf /usr/src/app/out/${requestId} && \
+		rm -rf /usr/src/app/out/${requestId}`);
+
+		return;
 	},
 );
 

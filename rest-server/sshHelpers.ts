@@ -1,7 +1,7 @@
 import child_process from "child_process";
 import util from "util";
 
-const exec = util.promisify(child_process.exec);
+export const exec = util.promisify(child_process.exec);
 
 const concatCommands = (commands: Array<string>) => commands.join(" & ");
 
