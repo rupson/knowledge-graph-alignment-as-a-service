@@ -22,6 +22,20 @@ export const uploadToAzure = async (requestId: string) => {
 		return uploadResponse;
 	} catch (err) {
 		console.log(`>> failed to upload zip file to azure.`, { requestId, err });
-    throw err;
+		throw err;
 	}
+};
+
+export const getBlobProperties = async (blobName: string) => {
+	try {
+		return await blobContainerClient
+			.getBlobClient(`${blobName}.zip`)
+			.getProperties();
+	} catch (err) {
+		return undefined;
+	}
+};
+
+export const getBlobUrl = (blobName: string) => {
+	return `https://kgaaasalignmentoutputs.blob.core.windows.net/outputs/${blobName}.zip`;
 };
