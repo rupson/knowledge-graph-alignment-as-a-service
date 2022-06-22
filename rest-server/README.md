@@ -13,6 +13,12 @@ Built using [ExpressJS](https://expressjs.com/)
 
 > Note that these are not required if running using docker. The project contains a [`Dockerfile`](./Dockerfile) which can be used to build the image.
 
+### Environment
+
+The app requires some environment variables to run. These can be provided in a .env file if running with docker (running with `yarn start` on host machine will not by default read from a .env file)
+
+The required env vars are listed (in obfuscated form for secret values) in [the example env file](./.env.example). Copy the contents of this file into a new `.env` file (it is gitignored) and fill in the secret values with correct data.
+
 ### Scripts
 
 ```bash

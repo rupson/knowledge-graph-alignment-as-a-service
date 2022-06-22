@@ -19,9 +19,8 @@ services:
       - 4000:4000
     networks:
       - logmap-network
-    environment:
-      - LOGMAP_URL=logmap
-      - SSH_USER=rob
+    env_file:
+      - ./rest-server/.env
     command: yarn start
     # volume for development only
     # mounts source code to container

@@ -1,18 +1,30 @@
 import { Request } from "express-serve-static-core";
 import { RequestHandler } from "express";
 import { AlignmentRequest } from "../types";
-import { getConfig } from '../environemt';
-import { execInSsh, exec } from '../sshHelpers';
+import { getConfig } from "../environemt";
+import { execInSsh, exec } from "../sshHelpers";
+import { uploadToAzure } from "../azure";
 
-const hasRequestId = <TReq extends Request>(
-	req: TReq,
-	//@ts-ignore
-): req is AlignmentRequest => Object.keys(req).includes("requestId");
+const hasRequestId = (req: Request): req is AlignmentRequest =>
+	Object.keys(req).includes("requestId");
 
 const JAVA_BINARY = `java`;
 const { logmapUrl, sshUser } = getConfig();
 
 const execInLogmap = execInSsh(sshUser, logmapUrl);
+
+const cleanup = (requestId: string) =>
+	Promise.all([
+		execInLogmap(`
+    rm -rf /usr/src/app/out/${requestId} && \
+    rm /usr/src/app/out/${requestId}.zip && \
+    rm -rf /usr/src/app/data/${requestId}
+    `),
+		exec(`
+    rm -rf /usr/src/app/outputs/${requestId} && \
+    rm /usr/src/app/outputs/${requestId}.zip
+    `),
+	]);
 
 export const alignmentHandler: RequestHandler = async (req, res) => {
 	if (!hasRequestId(req)) throw new Error(`missing request id`);
@@ -29,7 +41,7 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 			mkdir /usr/src/app/out/${requestId}`,
 	);
 	await exec(
-		`scp ./uploaded/${requestId}/* rob@logmap:/usr/src/app/data/${requestId}`,
+		`scp ./uploaded/${requestId}/* ${sshUser}@logmap:/usr/src/app/data/${requestId}`,
 	);
 	console.log(`< Uploaded files to logmap`);
 	await execInLogmap(
@@ -37,15 +49,22 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 		`${JAVA_BINARY} -jar target/logmap-matcher-4.0.jar MATCHER file:/usr/src/app/data/${requestId}/${req.files[0].filename} file:/usr/src/app/data/${requestId}/${req.files[1].filename} /usr/src/app/out/${requestId}/ true`,
 	);
 	console.log(`>> alignment complete >>`);
-	const result = await execInLogmap(
-		`cat ../out/${requestId}/logmap2_mappings.txt`,
+
+	await execInLogmap(
+		`cd ../out && zip -r ${requestId}.zip ${requestId}`,
 	);
 
-	res.status(200).send({ result });
+	await exec(
+		`scp ${sshUser}@logmap:/usr/src/app/out/${requestId}.zip ./outputs`,
+	);
+  
+	await uploadToAzure(requestId);
 
-	await execInLogmap(`
-		rm -rf /usr/src/app/out/${requestId} && \
-		rm -rf /usr/src/app/out/${requestId}`);
+	res
+		.status(200)
+		.send({ alignmentId: requestId, result: `Alignment id: ${requestId}` });
+
+	await cleanup(requestId);
 
 	return;
 };

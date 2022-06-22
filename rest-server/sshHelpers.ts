@@ -32,8 +32,12 @@ const execCommandInSsh =
 		const execString = `ssh -o StrictHostKeyChecking=no ${username}@${url} "${command}"`;
 		const { stderr, stdout } = await exec(execString);
 		if (stderr) {
-			// throw new ExecCommandError(stderr, command, { sshUrl: url, username });
-			console.log(`>> output from stderr::`, stderr)
+			console.log(`>> output from stderr::`, stderr);
+		}
+		if (stdout) {
+			console.log(`>> output from stout >> `, stdout);
+		} else {
+			console.log(`>> ran command ${command} in logmap`);
 		}
 		return stdout;
 	};

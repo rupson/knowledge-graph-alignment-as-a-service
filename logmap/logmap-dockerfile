@@ -35,6 +35,8 @@ RUN mkdir /usr/src/app/logmap-matcher/.ssh
 RUN touch /usr/src/app/logmap-matcher/.ssh/authorized_keys
 RUN cat id_rsa.pub >> /usr/src/app/logmap-matcher/.ssh/authorized_keys
 
+RUN apk --no-cache add zip
+
 RUN chmod -R 777 ./*
 # RUN chmod -R 444 *
 
