@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { getAlignmentHistory } from "../helpers/alignmentHistory";
+import { useAlignmentContext } from "../context/alignmentContext";
 
 type Alignment = { url: string };
 type AlignmentState =
@@ -33,16 +33,26 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 		fetchAlignment(alignmentId, setAlignmentState);
 	}, [alignmentId]);
 
+	React.useEffect(() => {
+		if (alignmentState.state === "not-found") {
+			const pollInterval = setInterval(() => {
+				console.log(`>>polling! >>>`);
+				fetchAlignment(alignmentId, setAlignmentState);
+			}, 3000);
+			return () => clearInterval(pollInterval);
+		}
+	}, [alignmentState]);
+
 	return (
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "space-between",
-        border: "solid 1px grey",
-        boxShadow: "black 1px 1px",
-        margin: "3px",
-        padding: "20px"
+				border: "solid 1px grey",
+				boxShadow: "black 1px 1px",
+				margin: "3px",
+				padding: "20px",
 			}}
 		>
 			<span>{alignmentId}</span>
@@ -62,13 +72,13 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 };
 
 export const AlignmentHistory: React.FC = () => {
-	const alignmentIds = getAlignmentHistory();
+	const { alignmentList } = useAlignmentContext();
 
 	return (
 		<div>
 			<h2>Alignment History</h2>
-      {alignmentIds.length === 0 && <div>No alignments to show</div>}
-			{alignmentIds.map((id) => (
+			{alignmentList.length === 0 && <div>No alignments to show</div>}
+			{alignmentList.map((id) => (
 				<AlignmentStatus alignmentId={id} />
 			))}
 		</div>

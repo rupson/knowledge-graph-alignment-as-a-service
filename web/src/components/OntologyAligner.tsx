@@ -1,17 +1,15 @@
 import React from "react";
 import axios from "axios";
-import { addNewAlignment } from "../helpers/alignmentHistory";
+import { useAlignmentContext } from '../context/alignmentContext';
 
 type Ontology = unknown;
 
-const LOADING_TEXT = `PENDING...`;
-
 const uploadOntologiesToServer = async (
 	ontologies: [Ontology, Ontology],
+	setApiCallState: (newState: ApiCallState) => void,
 	setAlignmentId: (id: string) => void,
 ) => {
-	console.log(`>>> calling server`);
-	setAlignmentId(LOADING_TEXT);
+	setApiCallState("loading");
 	const formData = new FormData();
 	formData.append("ontologies", ontologies[0] as File);
 	formData.append("ontologies", ontologies[1] as File);
@@ -20,7 +18,7 @@ const uploadOntologiesToServer = async (
 		formData,
 		{ headers: { "Content-type": "multipart/form-data" } },
 	);
-	console.log(`>>> data >>`, data);
+	setApiCallState("complete");
 	setAlignmentId(data.alignmentId);
 };
 
@@ -31,7 +29,6 @@ const OntologyUploader: React.FC<{
 		<input
 			type='file'
 			onChange={(e) => {
-				console.log(`>>fileInput::changeEvent>>`, e);
 				setOntology(e.target.files?.item(0));
 			}}
 			style={{
@@ -67,20 +64,15 @@ const OntologiesUploaders: React.FC<{
 	);
 };
 
+type ApiCallState = "none" | "loading" | "complete";
 export const OntologyAligner: React.FC = () => {
 	const [ontologies, setOntologies] = React.useState<
 		[Ontology | undefined, Ontology | undefined]
 	>([undefined, undefined]);
-	const [alignmentId, setAlignmentId] = React.useState<string | undefined>(
-		undefined,
-	);
 
-	React.useEffect(() => {
-		if (!alignmentId || alignmentId === LOADING_TEXT) {
-			return;
-		}
-		addNewAlignment(alignmentId);
-	}, [alignmentId]);
+	const [apiCallState, setApiCallState] = React.useState<ApiCallState>("none");
+
+	const { currentAlignmentId, setCurrentAlignmentId } = useAlignmentContext();
 
 	return (
 		<div
@@ -98,14 +90,21 @@ export const OntologyAligner: React.FC = () => {
 			/>
 			<button
 				type='submit'
-				onClick={(...args) => {
-					console.log(`>>onClick::args>>`, args);
-					uploadOntologiesToServer(ontologies, setAlignmentId);
+				onClick={(e) => {
+					uploadOntologiesToServer(
+						ontologies,
+						setApiCallState,
+						setCurrentAlignmentId,
+					);
 				}}
 			>
 				Align with logmap
 			</button>
-			<div>{alignmentId && `Alignment ID: ${alignmentId}`}</div>
+			<div>
+				{apiCallState === "complete" &&
+					`Alignment has been started with alignment id ${currentAlignmentId}`}
+				{apiCallState === "loading" && `Starting alignment with Logmap...`}
+			</div>
 		</div>
 	);
 };
