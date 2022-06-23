@@ -41,6 +41,7 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 			}, 3000);
 			return () => clearInterval(pollInterval);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [alignmentState]);
 
 	return (
@@ -50,9 +51,10 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 				flexDirection: "row",
 				justifyContent: "space-between",
 				border: "solid 1px grey",
-				boxShadow: "black 1px 1px",
+				boxShadow: "grey 1px 1px",
 				margin: "3px",
 				padding: "20px",
+				borderRadius: "5px",
 			}}
 		>
 			<span>{alignmentId}</span>
@@ -79,7 +81,7 @@ export const AlignmentHistory: React.FC = () => {
 			<h2>Alignment History</h2>
 			{alignmentList.length === 0 && <div>No alignments to show</div>}
 			{alignmentList.map((id) => (
-				<AlignmentStatus alignmentId={id} />
+				<AlignmentStatus key={`alignment+status_${id}`} alignmentId={id} />
 			))}
 		</div>
 	);

@@ -23,7 +23,6 @@ export const AlignmentsProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 
 	React.useEffect(() => {
-		console.log(`>>currentAlignmentId>>`, currentAlignmentId);
 		if (!currentAlignmentId) {
 			setAlignmentList(getAlignmentHistory());
 			return;
@@ -32,10 +31,10 @@ export const AlignmentsProvider: React.FC<{ children: React.ReactNode }> = ({
 			return;
 		}
 		setAlignmentList([currentAlignmentId, ...alignmentList]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentAlignmentId]);
 
 	React.useEffect(() => {
-		console.log(`>>alignmentList>>`, alignmentList);
 		localStorage.setItem("alignment_history", alignmentList.join(";"));
 	}, [alignmentList]);
 
