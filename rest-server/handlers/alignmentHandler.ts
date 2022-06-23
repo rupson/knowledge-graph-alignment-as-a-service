@@ -35,6 +35,10 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 
 	const { requestId } = req;
 
+	res
+	.status(201)
+	.send({ alignmentId: requestId, message: `Alignment id: ${requestId}` });
+
 	console.log(`>>copying files to remote server`);
 	await execInLogmap(
 		`mkdir /usr/src/app/data/${requestId} && \
@@ -50,19 +54,13 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 	);
 	console.log(`>> alignment complete >>`);
 
-	await execInLogmap(
-		`cd ../out && zip -r ${requestId}.zip ${requestId}`,
-	);
+	await execInLogmap(`cd ../out && zip -r ${requestId}.zip ${requestId}`);
 
 	await exec(
 		`scp ${sshUser}@logmap:/usr/src/app/out/${requestId}.zip ./outputs`,
 	);
-  
-	await uploadToAzure(requestId);
 
-	res
-		.status(200)
-		.send({ alignmentId: requestId, result: `Alignment id: ${requestId}` });
+	await uploadToAzure(requestId);
 
 	await cleanup(requestId);
 

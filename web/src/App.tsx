@@ -1,114 +1,14 @@
 import React from "react";
 import "./App.css";
-import axios from "axios";
-
-type Ontology = unknown;
-
-const callServer = async (
-	ontologies: [Ontology, Ontology],
-	setOutput: (output: string) => void,
-) => {
-	console.log(`>>> calling server`);
-	setOutput("loading...");
-	const formData = new FormData();
-	formData.append("ontologies", ontologies[0] as File);
-	formData.append("ontologies", ontologies[1] as File);
-	const { data } = await axios.post(
-		// `${process.env.REACT_APP_LOGMAP_API_URL}/align` || "",
-		`http://localhost:4000/align`,
-		formData,
-		{ headers: { "Content-type": "multipart/form-data" } },
-	);
-	console.log(`>>> data >>`, data);
-	setOutput(data.result);
-};
-
-const OntologyUploader: React.FC<{
-	setOntology: (ontology: Ontology) => void;
-}> = ({ setOntology }) => {
-	return (
-		<input
-			type='file'
-			onChange={(e) => {
-				console.log(`>>fileInput::changeEvent>>`, e);
-				setOntology(e.target.files?.item(0));
-			}}
-			style={{
-				border: "solid 1px salmon",
-				borderStyle: "dashed",
-				padding: "40px",
-			}}
-		/>
-	);
-};
-
-const OntologiesUploaders: React.FC<{
-	ontologies: [Ontology | undefined, Ontology | undefined];
-	setOntologies: (
-		ontologies: [Ontology | undefined, Ontology | undefined],
-	) => void;
-}> = ({ ontologies, setOntologies }) => {
-	return (
-		<div
-			style={{ display: "flex", justifyContent: "space-around", width: "100%" }}
-		>
-			<OntologyUploader
-				setOntology={(ontology: Ontology) =>
-					setOntologies([ontology, ontologies[1]])
-				}
-			/>
-			<OntologyUploader
-				setOntology={(ontology: Ontology) =>
-					setOntologies([ontologies[0], ontology])
-				}
-			/>
-		</div>
-	);
-};
-
-const OntologyAligner: React.FC = () => {
-	const [ontologies, setOntologies] = React.useState<
-		[Ontology | undefined, Ontology | undefined]
-	>([undefined, undefined]);
-	const [output, setOutput] = React.useState("");
-
-	React.useEffect(() => {
-		console.log(`>>OntologyAligner::useEffect::ontologies>>`, ontologies);
-	}, [ontologies]);
-
-	return (
-		<div
-			style={{
-				margin: "auto",
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "flex-start",
-			}}
-		>
-			<h2>Align ontologies with Logmap</h2>
-			<OntologiesUploaders
-				ontologies={ontologies}
-				setOntologies={setOntologies}
-			/>
-			<button
-				type='submit'
-				onClick={(...args) => {
-					console.log(`>>onClick::args>>`, args);
-					callServer(ontologies, setOutput);
-				}}
-			>
-				Align with logmap
-			</button>
-			<div>{output}</div>
-		</div>
-	);
-};
+import { AlignmentHistory } from './components/AlignmentHistory';
+import { OntologyAligner } from './components/OntologyAligner';
 
 const App = () => {
 	return (
 		<div className='App'>
 			<h1>Logmap web interface</h1>
 			<OntologyAligner />
+			<AlignmentHistory />
 		</div>
 	);
 };
