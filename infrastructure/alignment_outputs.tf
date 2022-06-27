@@ -4,7 +4,7 @@ resource "azurerm_storage_account" "alignment_outputs" {
   location                 = azurerm_resource_group.resource_group.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  allow_blob_public_access = true
+  # allow_blob_public_access = true
 }
 
 resource "azurerm_storage_container" "alignment_outputs" {

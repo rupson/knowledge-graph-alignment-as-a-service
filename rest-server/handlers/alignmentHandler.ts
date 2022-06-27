@@ -8,7 +8,7 @@ import { uploadToAzure } from "../azure";
 const hasRequestId = (req: Request): req is AlignmentRequest =>
 	Object.keys(req).includes("requestId");
 
-const JAVA_BINARY = `java`;
+const JAVA_BINARY = `/opt/ibm/java/bin/java`;
 const { logmapUrl, sshUser } = getConfig();
 
 const execInLogmap = execInSsh(sshUser, logmapUrl);
@@ -28,16 +28,19 @@ const cleanup = (requestId: string) =>
 
 export const alignmentHandler: RequestHandler = async (req, res) => {
 	if (!hasRequestId(req)) throw new Error(`missing request id`);
-	console.log(`>>incoming request `, {
-		requestId: req.requestId,
-		files: req.files,
-	});
+	console.log(
+		`>>incoming request `,
+		JSON.stringify({
+			requestId: req.requestId,
+			files: req.files,
+		}),
+	);
 
 	const { requestId } = req;
 
 	res
-	.status(201)
-	.send({ alignmentId: requestId, message: `Alignment id: ${requestId}` });
+		.status(201)
+		.send({ alignmentId: requestId, message: `Alignment id: ${requestId}` });
 
 	console.log(`>>copying files to remote server`);
 	await execInLogmap(
@@ -54,6 +57,7 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 	);
 	console.log(`>> alignment complete >>`);
 
+	console.log(`>> zipping output`);
 	await execInLogmap(`cd ../out && zip -r ${requestId}.zip ${requestId}`);
 
 	await exec(

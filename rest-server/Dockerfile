@@ -8,6 +8,8 @@ RUN chmod 400 /root/.ssh
 
 WORKDIR /usr/src/app
 
+COPY outputs outputs
+
 COPY package.json yarn.lock tsconfig.json ./
 
 RUN yarn install --frozen-lockfile

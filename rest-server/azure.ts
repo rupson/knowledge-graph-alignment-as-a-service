@@ -21,7 +21,10 @@ export const uploadToAzure = async (requestId: string) => {
 		console.log(`>> upload to azure complete`, uploadResponse);
 		return uploadResponse;
 	} catch (err) {
-		console.log(`>> failed to upload zip file to azure.`, { requestId, err });
+		console.log(
+			`>> failed to upload zip file to azure.`,
+			JSON.stringify({ requestId, err }),
+		);
 		throw err;
 	}
 };
