@@ -45,7 +45,7 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 			mkdir /usr/src/app/out/${requestId}`,
 	);
 	await exec(
-		`scp ./uploaded/${requestId}/* ${sshUser}@logmap:/usr/src/app/data/${requestId}`,
+		`scp ./uploaded/${requestId}/* ${sshUser}@${logmapUrl}:/usr/src/app/data/${requestId}`,
 	);
 	console.log(`< Uploaded files to logmap`);
 	await execInLogmap(
@@ -57,7 +57,7 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 	await execInLogmap(`cd ../out && zip -r ${requestId}.zip ${requestId}`);
 
 	await exec(
-		`scp ${sshUser}@logmap:/usr/src/app/out/${requestId}.zip ./outputs`,
+		`scp ${sshUser}@${logmapUrl}:/usr/src/app/out/${requestId}.zip ./outputs`,
 	);
 
 	await uploadToAzure(requestId);
