@@ -5,21 +5,30 @@ import { useAlignmentContext } from "../context/alignmentContext";
 type Ontology = unknown;
 
 const uploadOntologiesToServer = async (
-	ontologies: [Ontology, Ontology],
+	ontologies: [Ontology | undefined, Ontology | undefined],
 	setApiCallState: (newState: ApiCallState) => void,
 	setAlignmentId: (id: string) => void,
 ) => {
+	if (ontologies[0] === undefined || ontologies[1] === undefined) {
+		setApiCallState("missing_ontologies");
+		return;
+	}
 	setApiCallState("loading");
 	const formData = new FormData();
 	formData.append("ontologies", ontologies[0] as File);
 	formData.append("ontologies", ontologies[1] as File);
-	const { data } = await axios.post<{ alignmentId: string }>(
-		`${process.env.REACT_APP_LOGMAP_API_URL}/align` || "",
-		formData,
-		{ headers: { "Content-type": "multipart/form-data" } },
-	);
-	setApiCallState("complete");
-	setAlignmentId(data.alignmentId);
+	try {
+		const { data } = await axios.post<{ alignmentId: string }>(
+			`${process.env.REACT_APP_LOGMAP_API_URL}/align` || "",
+			formData,
+			{ headers: { "Content-type": "multipart/form-data" } },
+		);
+		setApiCallState("complete");
+		setAlignmentId(data.alignmentId);
+	} catch (err) {
+		console.error(err);
+		setApiCallState("server_error");
+	}
 };
 
 const OntologyUploader: React.FC<{
@@ -63,7 +72,8 @@ const OntologiesUploaders: React.FC<{
 	);
 };
 
-type ApiCallState = "none" | "loading" | "complete";
+type ApiCallErrorStates = "missing_ontologies" | "server_error";
+type ApiCallState = "none" | "loading" | "complete" | ApiCallErrorStates;
 export const OntologyAligner: React.FC = () => {
 	const [ontologies, setOntologies] = React.useState<
 		[Ontology | undefined, Ontology | undefined]
@@ -107,6 +117,10 @@ export const OntologyAligner: React.FC = () => {
 				{apiCallState === "complete" &&
 					`Alignment has been started with alignment id ${currentAlignmentId}`}
 				{apiCallState === "loading" && `Starting alignment with Logmap...`}
+				{apiCallState === "missing_ontologies" &&
+					`Please upload two ontologies for alignment`}
+				{apiCallState === "server_error" &&
+					`Call to kgas-api has failed. Contact maintainers if problem persists.`}
 			</div>
 		</div>
 	);
