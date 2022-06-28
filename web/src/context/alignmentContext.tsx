@@ -5,6 +5,8 @@ type AlignmentContextType = {
 	alignmentList: Array<string>;
 	currentAlignmentId: string | undefined;
 	setCurrentAlignmentId: (id: string) => void;
+	addAlignment: (id: string) => void;
+	removeAlignment: (id: string) => void;
 };
 
 const AlignmentContext = React.createContext<AlignmentContextType | undefined>(
@@ -31,16 +33,30 @@ export const AlignmentsProvider: React.FC<{ children: React.ReactNode }> = ({
 			return;
 		}
 		setAlignmentList([currentAlignmentId, ...alignmentList]);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentAlignmentId]);
 
 	React.useEffect(() => {
 		localStorage.setItem("alignment_history", alignmentList.join(";"));
 	}, [alignmentList]);
 
+	const addAlignment = (alignmentId: string) => {
+		setAlignmentList([alignmentId, ...alignmentList]);
+	};
+
+	const removeAlignment = (alignmnetId: string) => {
+		setAlignmentList(alignmentList.filter((id) => alignmnetId !== id));
+	};
+
 	return (
 		<AlignmentContext.Provider
-			value={{ currentAlignmentId, setCurrentAlignmentId, alignmentList }}
+			value={{
+				currentAlignmentId,
+				setCurrentAlignmentId,
+				alignmentList,
+				addAlignment,
+				removeAlignment,
+			}}
 		>
 			{children}
 		</AlignmentContext.Provider>

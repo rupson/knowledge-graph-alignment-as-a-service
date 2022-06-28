@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { useAlignmentContext } from '../context/alignmentContext';
+import { useAlignmentContext } from "../context/alignmentContext";
 
 type Ontology = unknown;
 
@@ -35,6 +35,7 @@ const OntologyUploader: React.FC<{
 				border: "solid 1px salmon",
 				borderStyle: "dashed",
 				padding: "40px",
+				margin: "5px",
 			}}
 		/>
 	);
@@ -47,9 +48,7 @@ const OntologiesUploaders: React.FC<{
 	) => void;
 }> = ({ ontologies, setOntologies }) => {
 	return (
-		<div
-			style={{ display: "flex", justifyContent: "space-around", width: "100%" }}
-		>
+		<div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
 			<OntologyUploader
 				setOntology={(ontology: Ontology) =>
 					setOntologies([ontology, ontologies[1]])
@@ -80,16 +79,20 @@ export const OntologyAligner: React.FC = () => {
 				margin: "auto",
 				display: "flex",
 				flexDirection: "column",
-				alignItems: "flex-start",
+				alignItems: "center",
+				border: "dotted 1px grey",
+				padding: "50px",
+				width: "max-content",
 			}}
 		>
-			<h2>Align ontologies with Logmap</h2>
+			<h2 style={{ marginTop: "0px" }}>Align ontologies with Logmap</h2>
 			<OntologiesUploaders
 				ontologies={ontologies}
 				setOntologies={setOntologies}
 			/>
 			<button
 				type='submit'
+				style={{ textAlign: "center" }}
 				onClick={(e) => {
 					uploadOntologiesToServer(
 						ontologies,

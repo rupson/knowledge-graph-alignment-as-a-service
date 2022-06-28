@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useAlignmentContext } from "../context/alignmentContext";
+import { FetchAlignment } from "./FetchAlignment";
 
 type Alignment = { url: string };
 type AlignmentState =
@@ -29,6 +30,10 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 		state: "loading",
 	});
 
+	const POLL_INTERVAL_MS = 30000
+
+	const { removeAlignment } = useAlignmentContext();
+
 	React.useEffect(() => {
 		fetchAlignment(alignmentId, setAlignmentState);
 	}, [alignmentId]);
@@ -38,7 +43,7 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 			const pollInterval = setInterval(() => {
 				console.log(`>>polling! >>>`);
 				fetchAlignment(alignmentId, setAlignmentState);
-			}, 3000);
+			}, POLL_INTERVAL_MS);
 			return () => clearInterval(pollInterval);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,6 +74,9 @@ const AlignmentStatus: React.FC<{ alignmentId: string }> = ({
 					<a href={alignmentState.alignment.url}>Download</a>
 				</div>
 			)}
+			<div>
+				<button onClick={() => removeAlignment(alignmentId)}>Remove</button>
+			</div>
 		</div>
 	);
 };
