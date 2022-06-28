@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 import { useAlignmentContext } from "../context/alignmentContext";
-import { FetchAlignment } from "./FetchAlignment";
 
 type Alignment = { url: string };
 type AlignmentState =

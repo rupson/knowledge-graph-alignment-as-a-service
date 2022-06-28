@@ -14,7 +14,7 @@ resource "azurerm_linux_web_app" "kgas_web" {
     always_on = false
     application_stack {
       docker_image     = "${azurerm_container_registry.acr.login_server}/web"
-      docker_image_tag = "6ec38fb"
+      docker_image_tag = "4276f63"
     }
   }
 }
