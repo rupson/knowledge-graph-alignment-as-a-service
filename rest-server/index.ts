@@ -8,7 +8,7 @@ import { alignmentHandler } from "./handlers/alignmentHandler";
 import { fetchAlignmentHandler } from "./handlers/fetchAlignmentHandler";
 
 const app = express();
-const port = 80;
+const port = process.env.PORT || 80;
 
 app.use(cors());
 app.use(bodyParser.json());

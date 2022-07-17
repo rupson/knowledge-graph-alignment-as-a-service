@@ -1,9 +1,13 @@
 # Knowledge Graph Alignment as a service
 
-Monolithic repository containing full stack application for Knowledge Graph Alignment as a Service. Exposes CLI functionality of [Logmap](https://github.com/ernestojimenezruiz/logmap-matcher) to users via a web interface and a RESTful API.
+Monolithic repository containing full stack application for Knowledge Graph Alignment as a Service. Exposes CLI functionality of [Logmap](https://github.com/ernestojimenezruiz/logmap-matcher) to users via a RESTful API and a web interface.
 
 Contains 3 primary applications:<br/>
 [**logmap**](./logmap) | [**rest server**](./rest-server) | [**webapp**](./web)
+
+## Using KGAS
+
+KGAS can be used via a UI on [the web app's live deployment](https://kgas-web.azurewebsites.net/). The API can also be consumed directly - read [the documentation in the API's README](./rest-server/README.md#usage) for details.
 
 ## Developing locally
 

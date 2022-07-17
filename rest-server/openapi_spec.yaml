@@ -1,0 +1,88 @@
+openapi: '3.0.2'
+info:
+  title: KGAS API
+  version: '1.0'
+servers:
+  - url: https://kgas-api.azurewebsites.net/
+paths:
+  /align:
+    post:
+      summary: Start an alignment with provided ontologies
+      requestBody:
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                ontologies:
+                  type: array
+                  description: The ontologies to align
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: 'The alignment has begun'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alignmentId:
+                    type: string
+                    description: a UUID representing the alignment's alignmentId
+                  message:
+                    type: string
+                    description: Additional information
+                    example: 'Alignment ID: xxx'
+
+  /alignment/{alignmentId}:
+    get:
+      summary: Retrieve an alignment result
+      parameters:
+        - name: alignmentId
+          in: path
+          required: true
+          description: The alignment id, as returned in the response of POST /align
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alignment found
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Blob found
+                  url:
+                    type: string
+                    description: The url to the zip file containing the outputs from the given alignment
+        '404':
+          description: Alignment outputs not found. This does not mean an alignment has failed. Alignments can take significant time to complete, so querying an ID only recently started is likely to respond with 404 first time.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alignmentId:
+                    type: string
+                    description: The alignment ID provided
+                  message:
+                    example: 'Not found'
+                    description: 'Error message'
+
+  /ping:
+    get:
+      summary: Server health check
+      responses:
+        '200':
+          description: The server is reachable
+
+
+
+
+
+

@@ -33,18 +33,10 @@ yarn build
 ```
 Compile typescript code using [`tsc`](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
 
-## Endpoints
+## Usage
 
-TODO
+The server exposes 3 endpoints. The base url for the live deployment is http://kgas-api.azurewebsites.net, or http://localhost if running locally (port can be configured but is 80 by default)
 
-### POST /align
+The endpoints are detailed in [OpenAPI spec](https://github.com/OAI/OpenAPI-Specification), which is used to generate the docs page with [SwaggerUI](https://swagger.io/tools/swagger-ui/).
 
-### Payload
-
-### Responses
-
-### Example usage
-
-```bash
-curl --location --request POST  '{{base-url}}/align'
-```
+The docs are deployed with Github pages and can be viewed here: 
