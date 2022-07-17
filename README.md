@@ -7,6 +7,8 @@ Contains 3 primary applications:<br/>
 
 ## Using KGAS
 
+[See the live API spec](https://rupson.github.io/knowledge-graph-alignment-as-a-service/)
+
 KGAS can be used via a UI on [the web app's live deployment](https://kgas-web.azurewebsites.net/). The API can also be consumed directly - read [the documentation in the API's README](./rest-server/README.md#usage) for details.
 
 ## Developing locally

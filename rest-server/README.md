@@ -37,6 +37,6 @@ Compile typescript code using [`tsc`](https://www.typescriptlang.org/docs/handbo
 
 The server exposes 3 endpoints. The base url for the live deployment is http://kgas-api.azurewebsites.net, or http://localhost if running locally (port can be configured but is 80 by default)
 
-The endpoints are detailed in [OpenAPI spec](https://github.com/OAI/OpenAPI-Specification), which is used to generate the docs page with [SwaggerUI](https://swagger.io/tools/swagger-ui/).
+The endpoints are detailed in [OpenAPI spec](https://github.com/OAI/OpenAPI-Specification), which is used to generate the docs page with [SwaggerUI](https://swagger.io/tools/swagger-ui/). The API specification is saved in this direcotry under [`openapi_spec.yaml`](./openapi_spec.yaml), or can be viewed in the UI online at https://rupson.github.io/knowledge-graph-alignment-as-a-service/
 
-The docs are deployed with Github pages and can be viewed here: 
+The docs are deployed with Github pages and can be viewed here: https://rupson.github.io/knowledge-graph-alignment-as-a-service/
