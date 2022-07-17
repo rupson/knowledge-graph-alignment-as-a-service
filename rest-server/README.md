@@ -39,4 +39,6 @@ The server exposes 3 endpoints. The base url for the live deployment is http://k
 
 The endpoints are detailed in [OpenAPI spec](https://github.com/OAI/OpenAPI-Specification), which is used to generate the docs page with [SwaggerUI](https://swagger.io/tools/swagger-ui/). The API specification is saved in this direcotry under [`openapi_spec.yaml`](./openapi_spec.yaml), or can be viewed in the UI online at https://rupson.github.io/knowledge-graph-alignment-as-a-service/
 
+For those using [Postman](https://www.postman.com/), there is also a collection saved in the repo which can be imported into the client directly. [Download it here.](./KGAS.postman_collection.json)
+
 The docs are deployed with Github pages and can be viewed here: https://rupson.github.io/knowledge-graph-alignment-as-a-service/

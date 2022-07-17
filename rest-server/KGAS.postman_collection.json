@@ -1,0 +1,167 @@
+{
+	"info": {
+		"_postman_id": "5cb49530-074d-408f-9a41-ecb82ba72b25",
+		"name": "KGAS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18772441"
+	},
+	"item": [
+		{
+			"name": "Create alignment",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Origin",
+						"value": "https://kgas-web.azurewebsites.net"
+					},
+					{
+						"key": "Referer",
+						"value": "https://kgas-web.azurewebsites.net/"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "cross-site"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"macOS\""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "ontologies",
+							"type": "file",
+							"src": "mouse.owl"
+						},
+						{
+							"key": "ontologies",
+							"type": "file",
+							"src": "human.owl"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://kgas-api.azurewebsites.net/align",
+					"protocol": "https",
+					"host": [
+						"kgas-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"align"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch alignment",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Origin",
+						"value": "https://kgas-web.azurewebsites.net"
+					},
+					{
+						"key": "Referer",
+						"value": "https://kgas-web.azurewebsites.net/"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "cross-site"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"macOS\""
+					}
+				],
+				"url": {
+					"raw": "https://kgas-api.azurewebsites.net/alignment/your-id",
+					"protocol": "https",
+					"host": [
+						"kgas-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"alignment",
+						"your-id"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
