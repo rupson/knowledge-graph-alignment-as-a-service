@@ -1,12 +1,12 @@
-import { Request } from "express-serve-static-core";
-import { RequestHandler } from "express";
-import { AlignmentRequest } from "../types";
-import { getConfig } from "../environemt";
-import { execInSsh, exec } from "../sshHelpers";
-import { uploadToAzure } from "../azure";
+import { Request } from 'express-serve-static-core';
+import { RequestHandler } from 'express';
+import { AlignmentRequest } from '../types';
+import { getConfig } from '../environment';
+import { execInSsh, exec } from '../sshHelpers';
+import { uploadToAzure } from '../azure';
 
 const hasRequestId = (req: Request): req is AlignmentRequest =>
-	Object.keys(req).includes("requestId");
+	Object.keys(req).includes('requestId');
 
 const JAVA_BINARY = `/opt/ibm/java/bin/java`;
 const { logmapUrl, sshUser } = getConfig();
