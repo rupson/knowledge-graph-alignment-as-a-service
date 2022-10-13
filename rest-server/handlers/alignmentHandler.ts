@@ -4,6 +4,7 @@ import { AlignmentRequest } from '../types';
 import { getConfig } from '../environment';
 import { execInSsh, exec } from '../sshHelpers';
 import { uploadToAzure } from '../azure';
+import { getFileStore } from '../storage';
 
 const hasRequestId = (req: Request): req is AlignmentRequest =>
 	Object.keys(req).includes('requestId');
@@ -38,6 +39,8 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 
 	const { requestId } = req;
 
+	const fileStore = getFileStore();
+
 	res
 		.status(201)
 		.send({ alignmentId: requestId, message: `Alignment id: ${requestId}` });
@@ -64,7 +67,8 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 		`scp ${sshUser}@${logmapUrl}:/usr/src/app/out/${requestId}.zip ./outputs`,
 	);
 
-	await uploadToAzure(requestId);
+	// await uploadToAzure(requestId);
+	await fileStore.saveFile(requestId);
 
 	await cleanup(requestId);
 
