@@ -3,29 +3,42 @@ import { RequestHandler } from 'express';
 import { AlignmentRequest } from '../types';
 import { getConfig } from '../environment';
 import { execInSsh, exec } from '../sshHelpers';
-import { uploadToAzure } from '../azure';
 import { getFileStore } from '../storage';
+import { config } from '../config';
 
 const hasRequestId = (req: Request): req is AlignmentRequest =>
 	Object.keys(req).includes('requestId');
 
-const JAVA_BINARY = `/opt/ibm/java/bin/java`;
+const JAVA_BINARY = `java`;
 const { logmapUrl, sshUser } = getConfig();
 
 const execInLogmap = execInSsh(sshUser, logmapUrl);
 
-const cleanup = (requestId: string) =>
-	Promise.all([
-		execInLogmap(`
-    rm -rf /usr/src/app/out/${requestId} && \
-    rm /usr/src/app/out/${requestId}.zip && \
-    rm -rf /usr/src/app/data/${requestId}
-    `),
-		exec(`
-    rm -rf /usr/src/app/outputs/${requestId} && \
-    rm /usr/src/app/outputs/${requestId}.zip
-    `),
-	]);
+const asyncNoop = async (...args: unknown[]) => {};
+
+const cleanRemoteContainer = (requestId: string) =>
+	execInLogmap(`
+rm -rf /usr/src/app/out/${requestId} && \
+rm /usr/src/app/out/${requestId}.zip && \
+rm -rf /usr/src/app/data/${requestId}
+`);
+
+const cleanLocalContainer = (requestId: string) =>
+	exec(`
+rm -rf /usr/src/app/outputs/${requestId} && \
+rm /usr/src/app/outputs/${requestId}.zip
+`);
+
+const cleanup = (requestId: string) => {
+	const { storageMethod } = config;
+
+	const localCleanupStrategy =
+		storageMethod === 'local' ? asyncNoop : cleanLocalContainer;
+
+	return Promise.all(
+		[cleanRemoteContainer, localCleanupStrategy].map((fn) => fn(requestId)),
+	);
+};
 
 export const alignmentHandler: RequestHandler = async (req, res) => {
 	if (!hasRequestId(req)) throw new Error(`missing request id`);
@@ -67,7 +80,6 @@ export const alignmentHandler: RequestHandler = async (req, res) => {
 		`scp ${sshUser}@${logmapUrl}:/usr/src/app/out/${requestId}.zip ./outputs`,
 	);
 
-	// await uploadToAzure(requestId);
 	await fileStore.saveFile(requestId);
 
 	await cleanup(requestId);

@@ -1,4 +1,6 @@
 import { getBlobProperties, uploadToAzure } from '../azure';
+import { config } from '../config';
+import { outputFileExistsWithId } from './localFileStore';
 
 type FileStore = {
 	getFileProperties: (fileName: string) => Promise<{ url: string } | undefined>;
@@ -21,18 +23,16 @@ const azureFileStore: FileStore = {
 };
 
 const localFileStore: FileStore = {
-	getFileProperties: undefined,
-	saveFile: undefined,
+	getFileProperties: async (alignmentId: string) => {
+		if (!outputFileExistsWithId(alignmentId)) return undefined;
+		return {
+			url: `${config.appBaseUrl}/download/${alignmentId}`,
+		};
+	},
+	saveFile: async (_) => {},
 };
 
 export const getFileStore = () => {
-	const storageMethod = process.env.STORAGE_METHOD || '';
-
-	if (!['local', 'azure'].includes(storageMethod))
-		throw new Error('Storage method must be provided in env var');
-
-	return (
-		{ local: localFileStore, azure: azureFileStore }[storageMethod] ||
-		localFileStore
-	);
+	const { storageMethod } = config;
+	return { local: localFileStore, azure: azureFileStore }[storageMethod];
 };

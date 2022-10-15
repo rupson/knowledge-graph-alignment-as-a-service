@@ -1,2 +1,5 @@
 # files uploaded to server during local development
 uploaded
+
+# local output files
+outputs/*.zip
