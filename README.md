@@ -33,3 +33,7 @@ For running any one service individually, this cal still be done with docker com
 Both the webapp and the rest server will respond to file changes in the source code and reload for you without you needing to rebuild or restart the service.
 Logmap itself will not do this as it is an external dependency of the project.
 
+## Paper
+
+Rob Upson and Ernesto Jiménez-Ruiz. **Knowledge Graph Alignmnet as a Service**. Demo paper at the International Semantic Web Conference (ISWC) 2022. [[PDF](https://drive.google.com/file/d/1Ov3NNmB9nk_01Q5TcWM_i_g2wIxDhuIO/view)] [[Video](https://youtu.be/LBS9kHR1NWU)]
+
